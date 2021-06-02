@@ -113,7 +113,31 @@ Globbing lets you use special characters to match patterns/characters. In the .g
 3. \- \- matches 0 or more characters
 4. ? - matches 1 character
 5. [abc] - matches a, b, _or_ c
-6. \*\* - matches nested directories - a/\*\*/z matches
+6. \* - matches nested directories - a/\*\*/z matches
    i. a/z
    ii. a/b/z
    iii. a/b/c/z
+
+## tags
+
+The tags help certain commits stand out amongst the other ones, such as version 1.0
+Syntax: `git tag -a v1.0`
+
+Note the **-a** flag used in the above command, which helps in creating an annotated flag. Excluding this will create a _lightweight_ tag.
+
+Annotated tags are recommended because they include a lot of extra information such as:
+
+-   the person who made the tag
+-   the date the tag was made
+-   a message for the tag
+-   Because of this, you should always use annotated tags.
+
+**Note:** If you just type `git tag` it returns a list of all tags in the commit history.
+The `git log` command displays the tag in the SHA line itself, no need to use any other flags.
+
+In order to delete a tag that was created by accident, then use the following command:
+`git tag -d <tag name>`
+
+By default, the tag gets added to the most recent commit, but we can also specify the commit we want to tag, by specifying the commit SHA along with the tag command, as follows:
+
+`git tag -a <tag name> <SHA>`
