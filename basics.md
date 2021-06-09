@@ -141,3 +141,164 @@ In order to delete a tag that was created by accident, then use the following co
 By default, the tag gets added to the most recent commit, but we can also specify the commit we want to tag, by specifying the commit SHA along with the tag command, as follows:
 
 `git tag -a <tag name> <SHA>`
+
+Note: The tags are like permanent pointers and are specific to the commits, they do not move fwd or backwards based on new commits
+
+## Branches
+
+Git allows us to have as many number of branches as needed, and the default one is **main** or **master**. If we now create a new branch called **sidebar**, and intend to use this branch as our current repo, we will need to use the `checkout` command.
+
+To check all the available branches, we will need to use the `git branch` command.
+
+It can also be used to:
+
+-   list all branch names in the repository
+-   create new branches
+-   delete branches
+
+In order to create a new branch, the syntax is `git branch <name>`.
+
+Note that this will not automatically change the HEAD to the new branch.
+
+### Checkout
+
+To change from 1 branch to another we have to use this command.
+**Syntax:** `git checkout <name>`
+
+It's important to understand how this command works. Running this command will:
+
+-   remove all files and directories from the Working Directory that Git is tracking (files that Git tracks are stored in the repository, so nothing is lost) go into the repository and pull out all of the files and directories of the commit that the branch points to (So this will remove all of the files that are referenced by commits in the master branch.)
+-   It will replace them with the files that are referenced by the commits in the sidebar branch.
+
+The active branch will be displayed with an \* next to it, and **HEAD** will point to the active branch.
+
+To delete any branch, use the **-d** flag along with the `branch` command, as follows:
+
+**Syntax**: `git branch -d <name>`
+
+**Note** In order to create a new branch and switch to it automatically, we can use the **-b** flag along with the `checkout` command, as follows:
+
+**Syntax**: `git checkout -b <name>`
+
+## Merge
+
+Combining branches together is called merging. Git can automatically merge the changes on different branches together.
+
+**Syntax:** `git merge <name-of-branch-to-merge-in>`
+
+When a merge happens, Git will:
+
+-   look at the branches that it's going to merge
+-   look back along the branch's history to find a single commit that both branches have in their commit history
+-   combine the lines of code that were changed on the separate branches together
+-   makes a commit to record the merge
+
+Note that the `<name-of-branch-to-merge-in>` indicates what branch to merge with the active branch.
+
+Usually, there are 2 types of merges, a **fast-forward** merge, and a **recursive** strategy merge.
+
+### What if a merge fails?
+
+The merges we just did were able to merge successfully. Git is able to intelligently combine lots of work on different branches. However, there are times when it can't combine branches together. When a merge is performed and fails, that is called a _merge conflict_.
+
+Read [this](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#Basic-Merging) and [this](https://git-scm.com/docs/git-merge) for more info.
+
+### Merge conflicts
+
+Most of the time Git will be able to merge branches together without any problem. However, there are instances when a merge cannot be fully performed automatically. When a merge fails, it's called a merge conflict.
+
+If a merge conflict does occur, Git will try to combine as much as it can, but then it will leave special markers (e.g. >>> and <<<) that tell you where you (yep, you the programmer!) needs to manually fix.
+
+**Resolving A Merge Conflict**:
+
+Git is using the merge conflict indicators to show you what lines caused the merge conflict on the two different branches as well as what the original line used to have. So to resolve a merge conflict, you need to:
+
+1. choose which line(s) to keep
+2. remove all lines with indicators
+
+Once you've removed all lines with merge conflict indicators and have selected what heading you want to use, just save the file, add it to the staging index, and commit it!
+
+Just like with a regular merge, this will pop open your code editor for you to supply a commit message. Just like before, it's common to use the provided merge commit message, so after the editor opens, just close it to use the provided commit message.
+
+#### To resolve the conflict in a file:
+
+1. locate and remove all lines with merge conflict indicators
+2. determine what to keep
+3. save the file(s)
+4. stage the file(s)
+5. make a commit
+
+Be careful that a file might have merge conflicts in multiple parts of the file, so make sure you check the entire file for merge conflict indicators - a quick search for `<<<` should help you locate all of them.
+
+More documentation [here](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#Basic-Merge-Conflicts)
+
+### Undoing Changes
+
+We can amend **the most recent** commits we have made, using the **--amend** flag along with the commit command.
+
+**Syntax**: `git commit --amend`
+
+This allows us to change the most recent commit message/add any minor changes to the prev commit, rather than a new commit being made.
+
+In order to add any new changes to the previous commit (related to the prev commit, obviously), then:
+
+1. edit the file(s)
+2. save the file(s)
+3. stage the file(s)
+4. run `git commit --amend`
+
+### Revert a commit
+
+When you tell Git to revert a specific commit, Git takes the changes that were made in commit and does the exact opposite of them. Let's break that down a bit. If a character is added in commit A, if Git reverts commit A, then Git will make a new commit where that character is deleted. It also works the other way where if a character/line is removed, then reverting that commit will add that content back!
+
+**Syntax**: `git revert <SHA-of-commit-to-revert>`
+
+This command:
+
+1. will undo the changes that were made by the provided commit
+2. creates a new commit to record the change
+
+[Here](https://git-scm.com/docs/git-revert) is the official docs.
+
+### Resetting a commit
+
+At first glance, resetting might seem coincidentally close to reverting, but they are actually quite different. Reverting creates a new commit that reverts or undos a previous commit. Resetting, on the other hand, erases commits!
+
+Git does keep track of everything for about 30 days before it completely erases anything. To access this content, you'll need to use the git reflog command. Check out these links for more info:
+
+-   [git reflog](https://git-scm.com/docs/git-reflog)
+-   [rewrite history](https://www.atlassian.com/git/tutorials/rewriting-history)
+
+#### Relative Commit References
+
+There are special characters called **Ancestry References** that we can use to tell Git about these relative references. Those characters are:
+
+-   ^ –> indicates the parent commit
+-   ~ –> indicates the first parent commit
+
+Here's how we can refer to previous commits:
+
+-   the parent commit – the following indicate the parent commit of the current commit
+
+    -   HEAD^
+    -   HEAD~
+    -   HEAD~1
+
+-   the grandparent commit – the following indicate the grandparent commit of the current commit
+
+    -   HEAD^^
+    -   HEAD~2
+
+-   the great-grandparent commit – the following indicate the great-grandparent commit of the current commit
+    -   HEAD^^^
+    -   HEAD~3
+
+The git reset command is used to reset (erase) commits
+**Syntax:** `git reset <reference-to-commit>`
+
+It can be used to:
+
+-   move the HEAD and current branch pointer to the referenced commit
+-   erase commits
+-   move committed changes to the staging index
+-   unstage committed changes
