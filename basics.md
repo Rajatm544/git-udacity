@@ -302,3 +302,20 @@ It can be used to:
 -   erase commits
 -   move committed changes to the staging index
 -   unstage committed changes
+
+There are 3 flags that can be used along with the reset command: **--mixed**, **--soft**, **--hard**
+
+**--mixed** is the default flag used with the reset command, which sends the files content back to the **working directory.**
+
+**--soft** will take the changes made in commit `<SHA>` and move them directly **to the Staging Index**.
+
+**--hard** will take the changes made in commit `<SHA>` and erases them.
+
+**Note:** It is usually a good idea to backup the current active branch using the backup command, before resetting the branch. Syntax: `git branch backup`
+
+If you created the backup branch prior to resetting anything, then you can easily get back to having the master branch point to the same commit as the backup branch.
+
+You'll just need to:
+
+-   remove the uncommitted changes from the working directory
+-   merge backup into master (which will cause a Fast-forward merge and move master up to the same point as backup)
